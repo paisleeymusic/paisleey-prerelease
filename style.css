@@ -178,6 +178,15 @@ h1,h2,h3,.display {
   padding: 48px 40px;
   box-shadow: 0 20px 80px rgba(0,0,0,.5), 0 0 40px var(--gold-glow);
 }
+/* Mobile override for form padding */
+@media (max-width: 600px) {
+  .hero { align-items: center; text-align: center; padding-bottom: 80px; }
+  .hero__content { align-items: center; }
+  .form-card { padding: 40px 24px; }
+  .platform-grid { grid-template-columns: 1fr; }
+  .follow-grid { grid-template-columns: 1fr 1fr; }
+}
+
 .form-eyebrow {
   font-family: var(--ff-display);
   font-size: .7rem; letter-spacing: .2em;
@@ -202,7 +211,6 @@ h1,h2,h3,.display {
   text-transform: uppercase; color: var(--text-muted);
 }
 .field-label .req { color: var(--accent); }
-.field-label small { font-family:var(--ff-body); font-weight:300; text-transform:none; letter-spacing:0; font-size:.75rem; }
 .field-input {
   background: rgba(255,255,255,.04);
   border: 1px solid rgba(242,232,218,.12);
@@ -214,14 +222,10 @@ h1,h2,h3,.display {
   outline: none; width: 100%;
   transition: all .4s var(--ease-smooth);
 }
-.field-input::placeholder { color: rgba(175,160,149,.4); }
 .field-input:focus {
   border-color: var(--accent);
   background: rgba(224,170,62,.05);
-  box-shadow: 0 0 0 3px rgba(224,170,62,.12);
 }
-.field-input.error { border-color: var(--error); }
-.field-hint { font-size: .75rem; color: var(--text-muted); }
 .field-error { font-size: .78rem; color: var(--error); min-height: 1em; }
 
 /* PLATFORM GRID */
@@ -234,90 +238,33 @@ h1,h2,h3,.display {
   display: flex; align-items: center; gap: .55rem;
   padding: .65rem .9rem;
   border: 1px solid rgba(242,232,218,.12);
-  border-radius: 2px;
   background: rgba(255,255,255,.03);
   color: var(--text-main);
-  font-family: var(--ff-body);
-  font-size: .88rem; font-weight: 500;
+  font-size: .88rem;
   cursor: pointer;
   transition: all .4s var(--ease-smooth);
-  min-height: 44px;
-}
-.platform-btn:hover {
-  border-color: rgba(224,170,62,.4);
-  background: rgba(224,170,62,.06);
-  transform: translateY(-1px);
+  min-height: 48px; /* Mobile friendly touch area */
 }
 .platform-btn.selected {
   border-color: var(--accent);
   background: rgba(224,170,62,.12);
   color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(224,170,62,.15);
 }
-.platform-btn[data-platform=instagram].selected { border-color:var(--ig); background:rgba(225,48,108,.1); color:#f47fab; }
-.platform-btn[data-platform=youtube].selected   { border-color:var(--yt); background:rgba(255,0,0,.1);   color:#ff7b7b; }
-.platform-btn[data-platform=tiktok].selected    { border-color:var(--tt); background:rgba(255,0,80,.1);  color:#ff6b9e; }
-.platform-btn[data-platform=x].selected         { border-color:rgba(242,232,218,.6); background:rgba(242,232,218,.07); color:var(--text-main); }
-.platform-btn[data-platform=whatsapp].selected  { border-color:var(--wa); background:rgba(37,211,102,.1); color:#4ee888; }
-.platform-icon { width:1.15rem; height:1.15rem; flex-shrink:0; }
 
 /* CTA */
 .cta-btn {
-  display: flex; align-items:center; justify-content:center; gap:.5rem;
   width: 100%; margin-top: 1.5rem;
   padding: 1rem;
   background: var(--accent);
   color: var(--bg-dark);
   font-family: var(--ff-display);
   font-size: .85rem; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  border: 1px solid var(--accent);
+  text-transform: uppercase;
+  border: none;
   border-radius: 2px;
   cursor: pointer;
-  transition: all .4s var(--ease-smooth);
   min-height: 52px;
 }
-.cta-btn:hover:not(:disabled) {
-  background: transparent;
-  color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px var(--gold-glow);
-}
-.cta-btn:active { transform: scale(.98); }
-.cta-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.cta-btn__spinner {
-  display:none; width:17px; height:17px;
-  border: 2px solid rgba(18,12,10,.3);
-  border-top-color: var(--bg-dark);
-  border-radius: 50%;
-  animation: spin .6s linear infinite;
-}
-.cta-btn.loading .cta-btn__spinner { display:block; }
-.cta-btn.loading .cta-btn__text::after { content:'…'; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-.form-error-summary {
-  background: rgba(255,77,90,.08);
-  border: 1px solid rgba(255,77,90,.3);
-  border-radius: 2px;
-  padding: .75rem 1rem;
-  font-size: .83rem; color: var(--error);
-  display: none; margin-bottom: .5rem;
-}
-.form-error-summary.visible { display:block; }
-
-/* SUCCESS */
-.success-card {
-  text-align: center; padding: 2rem;
-  animation: slideUp .5s var(--ease-smooth) both;
-}
-.success-card__icon { font-size: 3rem; margin-bottom: 1rem; }
-.success-card__title {
-  font-size: 1.6rem;
-  font-family: var(--ff-display);
-  color: var(--accent); margin-bottom: .5rem;
-}
-.success-card__text { color: var(--text-muted); font-size: .9rem; }
 
 /* FOLLOW SECTION */
 .follow-section {
@@ -325,85 +272,33 @@ h1,h2,h3,.display {
   background: linear-gradient(to bottom, var(--bg-warm), var(--bg-dark));
   text-align: center;
 }
-.follow-inner { max-width: 720px; margin: 0 auto; }
-.follow-eyebrow {
-  font-family: var(--ff-display);
-  font-size: .7rem; letter-spacing: .2em;
-  text-transform: uppercase; color: var(--accent);
-  margin-bottom: .6rem;
-}
-.follow-title {
-  font-size: clamp(1.6rem,4vw,2.4rem);
-  margin-bottom: .5rem;
-}
-.follow-sub {
-  font-size: .9rem; color: var(--text-muted);
-  font-weight: 300; margin-bottom: 2.5rem;
-}
 .follow-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: .8rem;
 }
 .follow-card {
-  display: flex; flex-direction:column; align-items:center;gap:.7rem;
+  display: flex; flex-direction:column; align-items:center; gap:.7rem;
   padding: 1.4rem 1rem;
   border: 1px solid rgba(242,232,218,.08);
-  border-radius: 2px;
   background: rgba(255,255,255,.02);
   text-decoration: none;
   color: var(--text-main);
   font-family: var(--ff-display);
-  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  font-size: .72rem;
   transition: all .4s var(--ease-smooth);
 }
-.follow-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent);
-  background: rgba(224,170,62,.06);
-  box-shadow: 0 12px 40px var(--gold-glow);
-}
-.follow-card--instagram:hover { border-color:var(--ig); background:rgba(225,48,108,.08); box-shadow:0 12px 40px rgba(225,48,108,.2); }
-.follow-card--youtube:hover   { border-color:var(--yt); background:rgba(255,0,0,.08);   box-shadow:0 12px 40px rgba(255,0,0,.2); }
-.follow-card--tiktok:hover    { border-color:var(--tt); background:rgba(255,0,80,.08);  box-shadow:0 12px 40px rgba(255,0,80,.2); }
-.follow-card--x:hover         { border-color:rgba(242,232,218,.4); background:rgba(242,232,218,.05); }
-.follow-card--whatsapp:hover  { border-color:var(--wa); background:rgba(37,211,102,.08); box-shadow:0 12px 40px rgba(37,211,102,.2); }
-.follow-card__icon { width:2rem; height:2rem; }
-.follow-card__cta {
-  display: inline-flex; align-items:center; gap:.35rem;
-  font-size: .65rem; letter-spacing: .12em;
-  color: var(--text-muted);
-}
+.follow-card:hover { transform: translateY(-4px); border-color: var(--accent); }
 
 /* FOOTER */
 .site-footer {
   background: var(--bg-dark);
-  border-top: 1px solid rgba(242,232,218,.06);
   padding: 48px 6vw;
   text-align: center;
-  display: flex; flex-direction:column; gap:.6rem;
 }
-.footer__logo {
-  font-family: var(--ff-display);
-  font-size: 1.3rem; letter-spacing: .15em;
-  color: var(--accent);
-}
-.footer__text { font-size: .85rem; color: var(--text-muted); font-weight: 300; }
-.footer__text a { color: var(--accent); }
-.footer__copy { font-size: .72rem; color: rgba(175,160,149,.4); }
+.footer__logo { font-family: var(--ff-display); color: var(--accent); letter-spacing: .2em; font-weight: 800; }
 
-/* ANIMATIONS */
 @keyframes slideUp {
-  from { opacity:0; transform:translateY(32px); }
+  from { opacity:0; transform:translateY(24px); }
   to   { opacity:1; transform:translateY(0); }
-}
-
-/* RESPONSIVE */
-@media (min-width: 600px) {
-  .platform-grid { grid-template-columns: repeat(3,1fr); }
-  .follow-grid   { grid-template-columns: repeat(3,1fr); }
-}
-@media (min-width: 1024px) {
-  .form-card { padding: 56px 52px; }
-  .follow-grid { grid-template-columns: repeat(5,1fr); }
 }
