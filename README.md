@@ -34,12 +34,12 @@ Open `script.js` and update the `CONFIG` object at the top:
 ```js
 const CONFIG = {
   webhookUrl:     'https://YOUR-OPENCLAW-DOMAIN/paisleey/landing-form',
-  youtubeVideoId: 'YOUR_UNLISTED_VIDEO_ID',
-  releaseDate:    'April 12, 2025',
+  youtubeVideoId: 'T8ywL5iAWME',
+  releaseDate:    '2026',
 };
 ```
 
-Also in `index.html`, swap the YouTube `src` video ID (`dQw4w9WgXcQ`) with the real one.
+Also in `index.html`, swap the YouTube `src` video ID with the real one.
 
 Platform follow links — search `follow-card` elements and update their `href` attributes.
 
@@ -69,12 +69,9 @@ Platform follow links — search `follow-card` elements and update their `href` 
 
 ---
 
-## Transfer to Paisleey's Account
+## Ownership
 
-Once Paisleey has her own GitHub account:
-1. Go to repo Settings → Danger Zone → **Transfer**
-2. Enter her GitHub username
-3. Netlify re-links automatically
+Owned by: **paisleeymusic**
 
 ---
 
