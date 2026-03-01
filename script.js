@@ -4,8 +4,8 @@
 
 const CONFIG = {
   webhookUrl: 'https://[openclaw-domain]/paisleey/landing-form',
-  youtubeVideoId: 'dQw4w9WgXcQ',   // swap with real unlisted video ID
-  releaseDate: 'Coming Soon',       // e.g. "April 12, 2025"
+  youtubeVideoId: 'T8ywL5iAWME',   // swap in real unlisted video ID
+  releaseDate: '2026',       // e.g. "April 12, 2025"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
