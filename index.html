@@ -43,12 +43,20 @@
     </div>
     <div class="video-wrapper">
       <iframe id="yt-player"
-        src="https://www.youtube.com/embed/T8ywL5iAWME?enablejsapi=1&rel=0&modestbranding=1&color=white"
+        src="https://www.youtube-nocookie.com/embed/T8ywL5iAWME?enablejsapi=1&rel=0&modestbranding=1&color=white&controls=0&si=E_efZZWZqWD-zK57"
         title="Paisleey Pre-Release Preview" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
     <p class="video-release" id="release-date-sub">Out <strong>2026</strong> — on all platforms</p>
+
+    <!-- ===== ARTICLE LINK ===== -->
+    <div class="article-promo">
+      <button id="open-article" class="article-btn">
+        <span class="article-btn__icon">📰</span>
+        <span class="article-btn__text">Read: Inside Paisleey’s Smooth New Single "DOOR"</span>
+      </button>
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -221,6 +229,21 @@
     </p>
     <p class="footer__copy">&copy; <span id="footer-year"></span> Paisleey Music. Designed for the soul.</p>
   </footer>
+
+  <!-- ===== ARTICLE MODAL ===== -->
+  <div id="article-modal" class="modal" aria-hidden="true">
+    <div class="modal__overlay" id="modal-overlay"></div>
+    <div class="modal__container">
+      <div class="modal__header">
+        <span class="modal__title">Mdundo For Artists</span>
+        <button id="close-modal" class="modal__close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal__body">
+        <iframe src="https://www.mdundoforartists.com/post/new-release-inside-paisleey-s-smooth-new-single-door"
+          frameborder="0" class="modal__iframe"></iframe>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

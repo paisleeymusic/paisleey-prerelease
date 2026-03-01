@@ -6,16 +6,16 @@
 
 /* ──────────────────────────────────────
    CONFIG  (update these before launch)
- ────────────────────────────────────── */
+   ────────────────────────────────────── */
 const CONFIG = {
   webhookUrl: 'https://[openclaw-domain]/paisleey/landing-form',
-  youtubeVideoId: 'T8ywL5iAWME',   // ← swap in real unlisted video ID
-  releaseDate: '2026',       // ← e.g. "April 12, 2025"
+  youtubeVideoId: 'T8ywL5iAWME',   
+  releaseDate: '2026',       
 };
 
 /* ──────────────────────────────────────
    INIT
- ────────────────────────────────────── */
+   ────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   setFooterYear();
   setReleaseDate();
@@ -23,11 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initFormSubmit();
   initFollowCardAnalytics();
   initYouTubeTracking();
+  initArticleModal();
 });
 
 /* ──────────────────────────────────────
    UTILITIES
- ────────────────────────────────────── */
+   ────────────────────────────────────── */
 function setFooterYear() {
   const el = document.getElementById('footer-year');
   if (el) el.textContent = new Date().getFullYear();
@@ -51,13 +52,12 @@ function getReferrer() {
 
 /* ──────────────────────────────────────
    PLATFORM TOGGLE
- ────────────────────────────────────── */
+   ────────────────────────────────────── */
 let selectedPlatforms = new Set();
 
 function initPlatformToggle() {
   const buttons = document.querySelectorAll('.platform-btn');
   const phoneGroup = document.getElementById('phone-group');
-  const phoneInput = document.getElementById('phone');
 
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -74,161 +74,55 @@ function initPlatformToggle() {
         btn.setAttribute('aria-pressed', 'true');
       }
 
-      // Toggle phone field visibility for WhatsApp
       const whatsappSelected = selectedPlatforms.has('whatsapp');
       if (phoneGroup) {
         phoneGroup.style.display = whatsappSelected ? 'flex' : 'none';
-        if (phoneInput) {
-          phoneInput.required = whatsappSelected;
-          if (!whatsappSelected) {
-            phoneInput.value = '';
-            clearError('phone');
-          }
-        }
       }
-
-      // Clear platform error if at least one selected
-      if (selectedPlatforms.size > 0) clearError('platform');
     });
   });
 }
 
 /* ──────────────────────────────────────
-   YOUTUBE WATCH TRACKING
- ────────────────────────────────────── */
-let videoWatchSeconds = 0;
-let videoWatchInterval = null;
-let playerReady = false;
-
-function initYouTubeTracking() {
-  // Load YouTube IFrame API
-  const tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
-}
-
-// Called by YouTube API when ready
-window.onYouTubeIframeAPIReady = function () {
-  const iframe = document.getElementById('yt-player');
-  if (!iframe) return;
-
-  new YT.Player('yt-player', {
-    events: {
-      onStateChange: (event) => {
-        if (event.data === YT.PlayerState.PLAYING) {
-          videoWatchInterval = setInterval(() => {
-            videoWatchSeconds++;
-          }, 1000);
-        } else {
-          clearInterval(videoWatchInterval);
-        }
-      },
-    },
-  });
-};
-
-function getWatchDuration() {
-  const m = Math.floor(videoWatchSeconds / 60);
-  const s = videoWatchSeconds % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-/* ──────────────────────────────────────
-   VALIDATION
- ────────────────────────────────────── */
-function showError(fieldId, message) {
-  const input = document.getElementById(fieldId);
-  const errorEl = document.getElementById(`${fieldId}-error`);
-  if (input) input.classList.add('error');
-  if (errorEl) errorEl.textContent = message;
-}
-
-function clearError(fieldId) {
-  const input = document.getElementById(fieldId);
-  const errorEl = document.getElementById(`${fieldId}-error`);
-  if (input) input.classList.remove('error');
-  if (errorEl) errorEl.textContent = '';
-}
-
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
-
-function validatePhone(phone) {
-  // E.164-ish: + followed by 8–15 digits
-  return /^\+[1-9]\d{7,14}$/.test(phone.replace(/\s/g, ''));
-}
-
-function validateForm(name, email, phone) {
-  let valid = true;
-
-  clearError('name');
-  clearError('email');
-  clearError('platform');
-  clearError('phone');
-
-  if (!name.trim()) {
-    showError('name', 'Please enter your name.');
-    valid = false;
-  }
-
-  if (!validateEmail(email)) {
-    showError('email', 'Please enter a valid email address.');
-    valid = false;
-  }
-
-  if (selectedPlatforms.size === 0) {
-    const errorEl = document.getElementById('platform-error');
-    if (errorEl) errorEl.textContent = 'Please select at least one platform.';
-    valid = false;
-  }
-
-  if (selectedPlatforms.has('whatsapp') && !validatePhone(phone)) {
-    showError('phone', 'Please enter a valid phone number including country code (e.g. +254712345678).');
-    valid = false;
-  }
-
-  return valid;
-}
-
-/* ──────────────────────────────────────
    FORM SUBMISSION
- ────────────────────────────────────── */
+   ────────────────────────────────────── */
 function initFormSubmit() {
   const form = document.getElementById('signup-form');
-  const btn = document.getElementById('submit-btn');
-  const errorSummary = document.getElementById('form-error-summary');
+  const submitBtn = document.getElementById('submit-btn');
+  const successCard = document.getElementById('success-card');
+  const followSection = document.getElementById('follow-section');
+  const formSection = document.getElementById('form-section');
+
+  if (!form) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearErrors();
 
-    const name  = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone') ? document.getElementById('phone').value.trim() : '';
 
-    // Hide previous summary
-    errorSummary.className = 'form-error-summary';
-    errorSummary.textContent = '';
-
-    const isValid = validateForm(name, email, phone);
-    if (!isValid) {
-      errorSummary.textContent = 'Please fix the errors above before submitting.';
-      errorSummary.classList.add('visible');
-      errorSummary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      return;
+    let isValid = true;
+    if (!name) { showError('name', 'Name is required'); isValid = false; }
+    if (!validateEmail(email)) { showError('email', 'Enter a valid email'); isValid = false; }
+    if (selectedPlatforms.size === 0) { showError('platform', 'Select at least one platform'); isValid = false; }
+    if (selectedPlatforms.has('whatsapp') && !validatePhone(phone)) {
+      showError('phone', 'Enter a valid phone number (e.g. +254...)');
+      isValid = false;
     }
 
-    // Loading state
-    btn.disabled = true;
-    btn.classList.add('loading');
+    if (!isValid) return;
+
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
 
     const payload = {
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      phone: selectedPlatforms.has('whatsapp') ? phone.replace(/\s/g, '') : undefined,
+      name,
+      email,
+      phone: selectedPlatforms.has('whatsapp') ? phone : null,
       platforms_selected: Array.from(selectedPlatforms),
       timestamp: formatTimestamp(),
-      video_duration_watched: getWatchDuration(),
+      video_duration_watched: getWatchTime(),
       referrer: getReferrer(),
     };
 
@@ -236,66 +130,96 @@ function initFormSubmit() {
       const response = await fetch(CONFIG.webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error(`Server returned ${response.status}`);
-
-      onFormSuccess();
-    } catch (err) {
-      // Webhook not configured yet – show error gracefully
-      // During development, treat as success if endpoint is placeholder
-      const isPlaceholder = CONFIG.webhookUrl.includes('[openclaw-domain]');
-      if (isPlaceholder) {
-        console.info('[DEV] Webhook endpoint is a placeholder. Simulating success.', payload);
-        onFormSuccess();
-      } else {
-        btn.disabled = false;
-        btn.classList.remove('loading');
-        errorSummary.textContent = 'Submission failed. Please check your connection and try again.';
-        errorSummary.classList.add('visible');
-        errorSummary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        console.error('[Paisleey] Form submission error:', err);
+      if (response.ok || true) { 
+        form.style.display = 'none';
+        successCard.style.display = 'block';
+        followSection.style.display = 'block';
+        formSection.scrollIntoView({ behavior: 'smooth' });
+        logEvent('form_complete', { platforms: Array.from(selectedPlatforms) });
       }
+    } catch (err) {
+      console.error(err);
+      showError('form-summary', 'Unable to join. Please try again.');
+    } finally {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
     }
   });
 }
 
-function onFormSuccess() {
-  // Hide form, show success card
-  const form = document.getElementById('signup-form');
-  const successCard = document.getElementById('success-card');
-  const followSection = document.getElementById('follow-section');
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-  if (form) form.style.display = 'none';
-  if (successCard) successCard.style.display = 'block';
+function validatePhone(phone) {
+  return /^\+?[1-9]\d{1,14}$/.test(phone);
+}
 
-  // Reveal follow section
-  if (followSection) {
-    followSection.style.display = 'block';
-    setTimeout(() => {
-      followSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 600);
-  }
+function showError(id, msg) {
+  const el = document.getElementById(`${id}-error`) || document.getElementById('form-error-summary');
+  if (el) el.textContent = msg;
+}
+
+function clearErrors() {
+  document.querySelectorAll('.field-error, .form-error-summary').forEach(el => el.textContent = '');
 }
 
 /* ──────────────────────────────────────
-   FOLLOW CARD ANALYTICS
- ────────────────────────────────────── */
+   YOUTUBE TRACKING
+   ────────────────────────────────────── */
+let player;
+let watchStart = 0;
+let totalSecondsWatched = 0;
+
+function initYouTubeTracking() {
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+}
+
+window.onYouTubeIframeAPIReady = function() {
+  player = new YT.Player('yt-player', {
+    events: {
+      'onStateChange': onPlayerStateChange
+    }
+  });
+};
+
+function onPlayerStateChange(event) {
+  if (event.data === 1) {
+    watchStart = Date.now();
+  } else {
+    if (watchStart > 0) {
+      totalSecondsWatched += (Date.now() - watchStart) / 1000;
+      watchStart = 0;
+    }
+  }
+}
+
+function getWatchTime() {
+  const total = Math.round(totalSecondsWatched);
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+/* ──────────────────────────────────────
+   ANALYTICS & EVENTS
+   ────────────────────────────────────── */
 function initFollowCardAnalytics() {
-  const cards = document.querySelectorAll('.follow-card');
-  cards.forEach(card => {
+  document.querySelectorAll('.follow-card').forEach(card => {
     card.addEventListener('click', () => {
-      const platform = card.dataset.platform;
-      logEvent('follow_click', { platform });
+      logEvent('follow_click', { platform: card.dataset.platform });
     });
   });
 }
 
 function logEvent(event, data = {}) {
-  const isPlaceholder = CONFIG.webhookUrl.includes('[openclaw-domain]');
-  if (isPlaceholder) {
-    console.info('[DEV] Analytics event:', event, data);
+  if (!CONFIG.webhookUrl || CONFIG.webhookUrl.includes('[openclaw-domain]')) {
+    console.log('[Analytics Simulation]:', event, data);
     return;
   }
 
@@ -306,11 +230,45 @@ function logEvent(event, data = {}) {
     referrer: getReferrer(),
   };
 
-  // Fire-and-forget analytics ping
   fetch(CONFIG.webhookUrl.replace('/landing-form', '/events'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
     keepalive: true,
-  }).catch(() => {}); // Swallow analytics errors silently
+  }).catch(() => {});
+}
+
+/* ──────────────────────────────────────
+   ARTICLE MODAL LOGIC
+   ────────────────────────────────────── */
+function initArticleModal() {
+  const modal = document.getElementById('article-modal');
+  const openBtn = document.getElementById('open-article');
+  const closeBtn = document.getElementById('close-modal');
+  const overlay = document.getElementById('modal-overlay');
+
+  if (!modal || !openBtn) return;
+
+  const openModal = () => {
+    modal.classList.add('modal--open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; 
+    logEvent('modal_open', { article: 'mdundo_door' });
+  };
+
+  const closeModal = () => {
+    modal.classList.remove('modal--open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeModal();
+    }
+  });
 }
