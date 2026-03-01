@@ -42,7 +42,7 @@ const CONFIG = {
 Also update `index.html`:
 
 - YT Video ID: `T8ywL5iAWME`
-- Platform follow links: updated to @paisleeyke
+- Platform follow links: Instagram/X/TikTok as @paisleeyke, YouTube as @paisleeymusic
 
 ---
 
