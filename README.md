@@ -1,7 +1,7 @@
 # Paisleey – Pre-Release Landing Page
 
 > Mobile-first Afro R&B pre-release signup page.  
-> Target: **https://paisleeypre.netlify.app**
+> Live at: **<https://paisleeypre.netlify.app>**
 
 ---
 
@@ -39,13 +39,16 @@ const CONFIG = {
 };
 ```
 
-Also in `index.html`, swap the YouTube `src` video ID with the real one.
+Also update `index.html`:
 
-Platform follow links — search `follow-card` elements and update their `href` attributes.
+- YT Video ID: `T8ywL5iAWME`
+- Platform follow links: updated to @paisleeyke
 
 ---
 
 ## Form Payload
+
+On submission the page POSTs to the OpenClaw webhook:
 
 ```json
 {
@@ -61,6 +64,18 @@ Platform follow links — search `follow-card` elements and update their `href` 
 
 ---
 
+## Analytics Events
+
+Platform follow card clicks fire a separate POST to:
+
+```
+/paisleey/events
+```
+
+with `{ event: "follow_click", platform: "instagram", timestamp, referrer }`.
+
+---
+
 ## Deploy
 
 1. Push to `main` branch  
@@ -69,10 +84,6 @@ Platform follow links — search `follow-card` elements and update their `href` 
 
 ---
 
-## Ownership
-
-Owned by: **paisleeymusic**
-
----
+## Questions?
 
 See `Antigravity_Prompt_Paisleey_PreRelease.md` for full specification.
