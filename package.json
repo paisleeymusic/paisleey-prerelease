@@ -1,0 +1,10 @@
+{
+  "name": "paisleey-promo-machines",
+  "version": "1.0.0",
+  "description": "Paisleey Promo Landing Page",
+  "main": "script.js",
+  "dependencies": {
+    "google-spreadsheet": "^4.1.4",
+    "google-auth-library": "^9.6.3"
+  }
+}
