@@ -137,7 +137,7 @@ function initFormSubmit() {
         body: JSON.stringify(payload)
       });
 
-      if (response.ok || true) { // Simulation fallback
+      if (response.ok) { // Successfully submitted to Google Sheets
         form.style.display = 'none';
         successCard.style.display = 'block';
         followSection.style.display = 'block';
