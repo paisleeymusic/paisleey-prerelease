@@ -109,7 +109,7 @@ function initFormSubmit() {
     if (!validateEmail(email)) { showError('email', 'Enter a valid email'); isValid = false; }
     if (selectedPlatforms.size === 0) { showError('platform', 'Select at least one platform'); isValid = false; }
     if (selectedPlatforms.has('whatsapp') && !validatePhone(phone)) {
-      showError('phone', 'Enter a valid phone number (e.g. +254...)');
+      showError('phone', 'Enter a valid number (e.g. 0712... or +254...)');
       isValid = false;
     }
 
@@ -123,7 +123,7 @@ function initFormSubmit() {
     const payload = {
       name,
       email,
-      phone: selectedPlatforms.has('whatsapp') ? phone : null,
+      phone: selectedPlatforms.has('whatsapp') ? formatKenyanPhone(phone) : null,
       platforms_selected: Array.from(selectedPlatforms),
       timestamp: formatTimestamp(),
       video_duration_watched: getWatchTime(),
@@ -162,7 +162,17 @@ function validateEmail(email) {
 }
 
 function validatePhone(phone) {
-  return /^\+?[1-9]\d{1,14}$/.test(phone);
+  // Support international +254... or local 07... / 01...
+  const cleaned = phone.replace(/\s+/g, '');
+  return /^(\+254|0)[17]\d{8}$/.test(cleaned) || /^\+?[1-9]\d{1,14}$/.test(cleaned);
+}
+
+function formatKenyanPhone(phone) {
+  const cleaned = phone.replace(/\s+/g, '');
+  if (cleaned.startsWith('0') && cleaned.length === 10) {
+    return '+254' + cleaned.substring(1);
+  }
+  return cleaned;
 }
 
 function showError(id, msg) {
